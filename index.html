@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O'54 — Restaurant Brasserie | Le Touvet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #C4A265;
+  --gold-light: #D4B87A;
+  --gold-dark: #A88B4A;
+  --cream: #F5F0E8;
+  --cream-muted: #E8E0D4;
+  --dark: #1A1714;
+  --dark-surface: #22201C;
+  --dark-card: #2A2824;
+  --text-light: #C8C0B4;
+  --text-muted: #8A8278;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Josefin Sans', 'Helvetica Neue', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--dark);
+  color: var(--cream);
+  font-family: var(--sans);
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== SCROLL-EXPAND HERO ===== */
+#scroll-hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0E0D0B;
+}
+
+#scroll-hero.unlocked {
+  height: 100vh;
+}
+
+.hero-bg-layer {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.15s ease;
+}
+
+.hero-bg-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.3) saturate(0.7);
+}
+
+.expand-frame {
+  position: relative;
+  z-index: 10;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+  transition: border-radius 0.3s ease;
+  will-change: width, height;
+}
+
+.expand-frame.full {
+  border-radius: 0;
+}
+
+.expand-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.expand-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  transition: opacity 0.3s;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+
+
+.hero-title-top,
+.hero-title-bottom {
+  font-family: var(--serif);
+  font-weight: 300;
+  color: var(--cream);
+  transition: transform 0.1s linear, opacity 0.3s ease;
+  will-change: transform, opacity;
+  white-space: nowrap;
+}
+
+.hero-title-top {
+  font-size: clamp(2rem, 5vw, 4rem);
+  letter-spacing: 0.08em;
+}
+
+.hero-title-bottom {
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-style: italic;
+  color: var(--gold);
+  font-weight: 400;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  opacity: 1;
+  transition: opacity 0.4s;
+}
+
+.scroll-hint.hidden { opacity: 0; pointer-events: none; }
+
+.scroll-hint span {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.4; transform: scaleY(0.6); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* Slide indicators */
+.slide-indicators {
+  position: absolute;
+  bottom: 6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 0.6rem;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.slide-indicators.visible { opacity: 1; }
+
+.slide-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(200,192,180,0.3);
+  border: 1px solid rgba(196,162,101,0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.slide-dot.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  transform: scale(1.3);
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  transition: all 0.4s;
+}
+
+nav.solid {
+  background: rgba(26,23,20,0.97);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 rgba(196,162,101,0.15);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-decoration: none;
+}
+
+.nav-logo img {
+  height: 52px;
+  width: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.nav-logo span {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--cream);
+  text-decoration: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 400;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.3s;
+}
+
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 0.55rem 1.5rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.nav-cta:hover {
+  background: var(--gold);
+  color: var(--dark);
+}
+
+/* ===== VENUE SECTION ===== */
+.venue {
+  padding: 7rem 3rem;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.venue-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.venue-img-wrap {
+  position: relative;
+  overflow: hidden;
+  height: 400px;
+}
+
+.venue-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.85);
+  transition: all 0.6s;
+}
+
+.venue-img-wrap:hover img {
+  filter: brightness(0.95);
+  transform: scale(1.03);
+}
+
+.venue-img-label {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--cream);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+}
+
+.venue-text {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+}
+
+
+.venue-text-content p {
+  color: var(--text-light);
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+/* ===== RATING STRIP ===== */
+.rating-strip {
+  background: var(--dark-surface);
+  padding: 2rem 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(196,162,101,0.1);
+  border-bottom: 1px solid rgba(196,162,101,0.1);
+}
+
+.rating-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.rating-item .stars { color: var(--gold); font-size: 1.1rem; letter-spacing: 2px; }
+.rating-item strong { color: var(--cream); font-weight: 500; }
+.divider-dot { width: 4px; height: 4px; background: var(--gold-dark); border-radius: 50%; }
+
+/* ===== SECTION COMMON ===== */
+.section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.section-label::before {
+  content: '';
+  width: 30px;
+  height: 1px;
+  background: var(--gold);
+}
+
+/* ===== PHOTO GALLERY ===== */
+.photo-gallery {
+  padding: 2rem 0;
+  background: var(--dark-surface);
+  position: relative;
+}
+
+.photo-gallery::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.photo-grid img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  filter: brightness(0.8) saturate(0.9);
+  transition: all 0.5s;
+  cursor: pointer;
+}
+
+.photo-grid img:hover {
+  filter: brightness(1) saturate(1.05);
+  z-index: 2;
+  transform: scale(1.03);
+}
+
+/* ===== REVIEWS ===== */
+.reviews {
+  padding: 6rem 0 8rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.reviews-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 0 3rem;
+}
+
+.reviews-header h2 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 2rem;
+  animation: scrollCarousel 80s linear infinite;
+  width: max-content;
+}
+
+.carousel-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollCarousel {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.review-card {
+  flex-shrink: 0;
+  width: 380px;
+  padding: 2.5rem;
+  background: var(--dark-surface);
+  border: 1px solid rgba(196,162,101,0.08);
+  position: relative;
+  transition: border-color 0.3s;
+}
+
+.review-card:hover { border-color: rgba(196,162,101,0.2); }
+
+.review-card::before {
+  content: '\201C';
+  font-family: var(--serif);
+  font-size: 4rem;
+  color: var(--gold);
+  opacity: 0.25;
+  position: absolute;
+  top: 0.8rem; left: 1.5rem;
+  line-height: 1;
+}
+
+.review-stars {
+  color: var(--gold);
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  margin-bottom: 1.2rem;
+}
+
+.review-text {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-light);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.review-author {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.review-author strong {
+  color: var(--cream);
+  font-weight: 500;
+}
+
+/* ===== INFO ===== */
+.info-section {
+  padding: 6rem 3rem 8rem;
+  background: var(--dark-surface);
+  border-top: 1px solid rgba(196,162,101,0.1);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.info-block h3 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.info-block p, .info-block address {
+  font-style: normal;
+  color: var(--text-light);
+  font-size: 0.92rem;
+  line-height: 1.9;
+}
+
+.info-block a {
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.info-block a:hover { color: var(--gold-light); }
+
+.hours-table { width: 100%; border-collapse: collapse; }
+.hours-table td {
+  padding: 0.45rem 0;
+  font-size: 0.88rem;
+  color: var(--text-light);
+  border-bottom: 1px solid rgba(196,162,101,0.06);
+}
+.hours-table td:first-child {
+  color: var(--cream);
+  font-weight: 400;
+  text-transform: capitalize;
+  width: 120px;
+}
+.hours-table .closed { color: var(--text-muted); font-style: italic; }
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 3rem;
+  text-align: center;
+  border-top: 1px solid rgba(196,162,101,0.1);
+}
+footer img {
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  margin-bottom: 1.2rem;
+  opacity: 0.85;
+  object-fit: cover;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+footer p {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .venue-grid { grid-template-columns: 1fr; }
+  .venue-img-wrap { height: 300px; }
+
+    .info-grid { grid-template-columns: 1fr 1fr; }
+
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0.8rem 1.2rem; }
+  .nav-links { display: none; }
+  .venue { padding: 4rem 1.5rem; }
+  .venue-text { grid-template-columns: 1fr; gap: 1.5rem; }
+  
+
+  .photo-grid { grid-template-columns: repeat(2, 1fr); }
+  .photo-grid img { height: 220px; }
+  .reviews { padding: 4rem 0; }
+  .info-section { padding: 4rem 1.5rem; }
+  .info-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .rating-strip { padding: 1.5rem; gap: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <img src="img-1.png" alt="O'54">
+    <span>O'54</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#lieu">Le lieu</a></li>
+    <li><a href="carte.html">La carte</a></li>
+    <li><a href="#avis">Avis</a></li>
+    <li><a href="#infos">Infos</a></li>
+  </ul>
+  <a href="tel:0476085698" class="nav-cta">Réserver</a>
+</nav>
+
+<!-- SCROLL-EXPAND HERO -->
+<section id="scroll-hero">
+  <!-- Background layer (fades out) -->
+  <div class="hero-bg-layer" id="heroBg">
+    <img src="img-2.jpg" alt="Intérieur O'54">
+  </div>
+
+  <!-- Expanding media frame -->
+  <div class="expand-frame" id="expandFrame">
+    <img src="img-3.jpg" alt="Terrasse O'54" id="heroSlideImg">
+    <div class="expand-overlay" id="expandOverlay">
+      <div class="hero-title-top" id="titleTop">Restaurant &middot; Brasserie</div>
+      <div class="hero-title-bottom" id="titleBottom">O'54</div>
+    </div>
+  </div>
+
+  <!-- Slide dots -->
+  <div class="slide-indicators" id="slideDots">
+    <div class="slide-dot active" data-slide="0"></div>
+    <div class="slide-dot" data-slide="1"></div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint" id="scrollHint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- RATING STRIP -->
+<div class="rating-strip" id="mainContent">
+  <div class="rating-item">
+    <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+    <span><strong>4,7</strong> / 5</span>
+  </div>
+  <div class="divider-dot"></div>
+  <div class="rating-item"><span><strong>610</strong> avis Google</span></div>
+  <div class="divider-dot"></div>
+  <div class="rating-item"><span><strong>20 – 30 &euro;</strong> par personne</span></div>
+  <div class="divider-dot"></div>
+  <div class="rating-item"><span>Terrasse &middot; Cocktails &middot; Réservation conseillée</span></div>
+</div>
+
+<!-- VENUE / LE LIEU -->
+<section class="venue" id="lieu">
+  <div class="section-label">Notre adresse</div>
+  <h2 style="font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:300;line-height:1.15;margin-bottom:0.5rem;">Un cadre <em style="font-style:italic;color:var(--gold-light);">chaleureux</em></h2>
+  <p style="color:var(--text-muted);font-size:0.95rem;max-width:550px;margin-bottom:0;">Au pied de la Chartreuse, entre terrasse ensoleillée et salle élégante.</p>
+
+  <div class="venue-grid">
+    <div class="venue-img-wrap reveal">
+      <img src="img-4.jpg" alt="Terrasse O'54">
+      <div class="venue-img-label">La terrasse</div>
+    </div>
+    <div class="venue-img-wrap reveal">
+      <img src="img-5.jpg" alt="Salle O'54">
+      <div class="venue-img-label">La salle</div>
+    </div>
+    <div class="venue-text reveal">
+      <div class="venue-text-content">
+        <p>
+          Chez O'54, chaque plat est une invitation au partage. Notre cuisine maison,
+          élaborée à partir de produits frais et de saison, célèbre les saveurs
+          authentiques du terroir alpin. De l'entrecôte grillée au gratin dauphinois
+          en passant par nos desserts faits maison, nous mettons un point d'honneur
+          à offrir des assiettes copieuses et gourmandes.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIE PHOTOS -->
+<section class="photo-gallery" id="signatures">
+  <div class="photo-grid">
+    <img src="img-6.jpg" alt="" class="reveal">
+    <img src="img-7.jpg" alt="" class="reveal">
+    <img src="img-8.jpg" alt="" class="reveal">
+    <img src="img-9.jpg" alt="" class="reveal">
+    <img src="img-10.jpg" alt="" class="reveal">
+    <img src="img-11.jpg" alt="" class="reveal">
+    <img src="img-12.jpg" alt="" class="reveal">
+    <img src="img-13.jpg" alt="" class="reveal">
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews" id="avis">
+  <div class="reviews-header reveal">
+    <div class="section-label" style="justify-content:center">Témoignages</div>
+    <h2>Ce qu'en disent nos clients</h2>
+  </div>
+  <div class="carousel-track">
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Fidèle cliente depuis des années, je ne suis jamais déçue ! Le cadre est magnifique, les assiettes sont généreuses, un excellent rapport qualité/prix.</p>
+      <div class="review-author"><strong>Aline B.</strong> — Février 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Un restaurant où l'on revient avec plaisir. Plats copieux, cuisine gourmande et généreuse sans excès, service rapide et accueil chaleureux.</p>
+      <div class="review-author"><strong>Dounia B.</strong> — Décembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Quelle belle surprise ! De passage au Touvet, nous avons eu la chance de déjeuner à l'O'54. De belles assiettes bien appétissantes.</p>
+      <div class="review-author"><strong>Roux C.</strong> — Novembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Service impeccable, accueil très chaleureux et professionnel. Une excellente expérience du début à la fin. Merci à vous.</p>
+      <div class="review-author"><strong>Ophélie J.</strong> — Septembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Ça faisait longtemps que j'avais pas mangé aussi bien au restaurant. La tagliata de bœuf est un délice, la viande est excellente.</p>
+      <div class="review-author"><strong>Gaylord C.</strong> — Mars 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Accueil chaleureux, rapport qualité/prix imbattable, toujours un plaisir de venir manger. On se sent comme à la maison.</p>
+      <div class="review-author"><strong>Elodie R.</strong> — Septembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Très bon restaurant, l'entrecôte était excellente, de même pour les légumes de saison et le gratin dauphinois. Accueil au top.</p>
+      <div class="review-author"><strong>Antoine B.</strong> — Mai 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Une cuisine très bonne, un très bon moment, nous avons passé une très agréable soirée merci beaucoup à tous. Nous reviendrons.</p>
+      <div class="review-author"><strong>Nathalie B.</strong> — Février 2026</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Première expérience dans ce restaurant. J'ai adoré. Excellente qualité de cuisine. Très accueillant et disponible. Les prix sont tout à fait corrects.</p>
+      <div class="review-author"><strong>Scorps</strong> — Juillet 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Un très bon moment, de belles assiettes bien appétissantes, le tout assuré par un très bon service. Bravo au chef !</p>
+      <div class="review-author"><strong>Raynald R.</strong> — Novembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Restaurant très sympa avec un accueil chaleureux et une cuisine de qualité. On y retourne avec plaisir à chaque fois.</p>
+      <div class="review-author"><strong>Jean-Christophe A.</strong> — Octobre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Super restaurant, très grand avec une salle et une terrasse. Les plats sont variés et copieux. On recommande !</p>
+      <div class="review-author"><strong>Gwendoline</strong> — Juin 2025</div>
+    </div>
+    <!-- DUPLICATE SET FOR SEAMLESS LOOP -->
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Fidèle cliente depuis des années, je ne suis jamais déçue ! Le cadre est magnifique, les assiettes sont généreuses, un excellent rapport qualité/prix.</p>
+      <div class="review-author"><strong>Aline B.</strong> — Février 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Un restaurant où l'on revient avec plaisir. Plats copieux, cuisine gourmande et généreuse sans excès, service rapide et accueil chaleureux.</p>
+      <div class="review-author"><strong>Dounia B.</strong> — Décembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Quelle belle surprise ! De passage au Touvet, nous avons eu la chance de déjeuner à l'O'54. De belles assiettes bien appétissantes.</p>
+      <div class="review-author"><strong>Roux C.</strong> — Novembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Service impeccable, accueil très chaleureux et professionnel. Une excellente expérience du début à la fin. Merci à vous.</p>
+      <div class="review-author"><strong>Ophélie J.</strong> — Septembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Ça faisait longtemps que j'avais pas mangé aussi bien au restaurant. La tagliata de bœuf est un délice, la viande est excellente.</p>
+      <div class="review-author"><strong>Gaylord C.</strong> — Mars 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Accueil chaleureux, rapport qualité/prix imbattable, toujours un plaisir de venir manger. On se sent comme à la maison.</p>
+      <div class="review-author"><strong>Elodie R.</strong> — Septembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Très bon restaurant, l'entrecôte était excellente, de même pour les légumes de saison et le gratin dauphinois. Accueil au top.</p>
+      <div class="review-author"><strong>Antoine B.</strong> — Mai 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Une cuisine très bonne, un très bon moment, nous avons passé une très agréable soirée merci beaucoup à tous. Nous reviendrons.</p>
+      <div class="review-author"><strong>Nathalie B.</strong> — Février 2026</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Première expérience dans ce restaurant. J'ai adoré. Excellente qualité de cuisine. Très accueillant et disponible. Les prix sont tout à fait corrects.</p>
+      <div class="review-author"><strong>Scorps</strong> — Juillet 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Un très bon moment, de belles assiettes bien appétissantes, le tout assuré par un très bon service. Bravo au chef !</p>
+      <div class="review-author"><strong>Raynald R.</strong> — Novembre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Restaurant très sympa avec un accueil chaleureux et une cuisine de qualité. On y retourne avec plaisir à chaque fois.</p>
+      <div class="review-author"><strong>Jean-Christophe A.</strong> — Octobre 2025</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">Super restaurant, très grand avec une salle et une terrasse. Les plats sont variés et copieux. On recommande !</p>
+      <div class="review-author"><strong>Gwendoline</strong> — Juin 2025</div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO -->
+<section class="info-section" id="infos">
+  <div class="info-grid">
+    <div class="info-block reveal">
+      <h3>Nous trouver</h3>
+      <address>
+        29 Chemin de la Grande Terre<br>
+        38660 Le Touvet<br><br>
+        <a href="tel:0476085698">04 76 08 56 98</a>
+      </address>
+    </div>
+    <div class="info-block reveal">
+      <h3>Horaires</h3>
+      <table class="hours-table">
+        <tr><td>Lundi</td><td class="closed">Fermé</td></tr>
+        <tr><td>Mardi</td><td>12h–13h45 · 19h30–21h</td></tr>
+        <tr><td>Mercredi</td><td>12h–13h45 · 19h30–21h</td></tr>
+        <tr><td>Jeudi</td><td>12h–13h45 · 19h30–21h</td></tr>
+        <tr><td>Vendredi</td><td>12h–13h45 · 19h30–21h</td></tr>
+        <tr><td>Samedi</td><td>12h–13h45 · 19h30–21h</td></tr>
+        <tr><td>Dimanche</td><td class="closed">Fermé</td></tr>
+      </table>
+    </div>
+    <div class="info-block reveal">
+      <h3>Réservation</h3>
+      <p>
+        Restaurant très vite complet, la réservation est vivement conseillée.<br><br>
+        Appelez-nous au<br>
+        <a href="tel:0476085698" style="font-size:1.3rem;font-family:var(--serif);">04 76 08 56 98</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="img-14.png" alt="O'54">
+  <p>O'54 — Restaurant Brasserie &middot; Le Touvet &middot; Depuis toujours, le plaisir du bien manger.</p>
+</footer>
+
+<script>
+(function() {
+  // === SCROLL-EXPAND HERO ===
+  const hero = document.getElementById('scroll-hero');
+  const frame = document.getElementById('expandFrame');
+  const overlay = document.getElementById('expandOverlay');
+  const bgLayer = document.getElementById('heroBg');
+  const titleTop = document.getElementById('titleTop');
+  const titleBottom = document.getElementById('titleBottom');
+  const scrollHint = document.getElementById('scrollHint');
+  const slideDots = document.getElementById('slideDots');
+  const slideImg = document.getElementById('heroSlideImg');
+
+  let progress = 0;
+  let expanded = false;
+  let touchStartY = 0;
+  const isMobile = window.innerWidth < 768;
+
+  const slides = [
+    "img-15.jpg",
+    "img-16.jpg"
+  ];
+  let currentSlide = 0;
+  let slideTimer;
+
+  function startSlideshow() {
+    slideTimer = setInterval(() => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      slideImg.style.opacity = '0';
+      setTimeout(() => {
+        slideImg.src = slides[currentSlide];
+        slideImg.style.opacity = '1';
+        updateDots();
+      }, 400);
+    }, 5000);
+  }
+
+  function updateDots() {
+    slideDots.querySelectorAll('.slide-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === currentSlide);
+    });
+  }
+
+  slideImg.style.transition = 'opacity 0.4s ease';
+  startSlideshow();
+
+  function applyProgress(p) {
+    const minW = isMobile ? 280 : 420;
+    const maxW = window.innerWidth;
+    const minH = isMobile ? 350 : 500;
+    const maxH = window.innerHeight;
+
+    const w = minW + p * (maxW - minW);
+    const h = minH + p * (maxH - minH);
+
+    frame.style.width = w + 'px';
+    frame.style.height = h + 'px';
+    frame.style.position = 'absolute';
+    frame.style.top = '50%';
+    frame.style.left = '50%';
+    frame.style.transform = 'translate(-50%, -50%)';
+
+    if (p >= 0.95) {
+      frame.classList.add('full');
+    } else {
+      frame.classList.remove('full');
+    }
+
+    bgLayer.style.opacity = Math.max(0, 1 - p * 2.5);
+    overlay.style.background = 'rgba(0,0,0,' + (0.5 - p * 0.2) + ')';
+
+    const tx = p * (isMobile ? 120 : 100);
+    titleTop.style.transform = 'translateX(-' + tx + 'vw)';
+    titleTop.style.opacity = Math.max(0, 1 - p * 2);
+    titleBottom.style.transform = 'translateX(' + tx + 'vw)';
+    titleBottom.style.opacity = Math.max(0, 1 - p * 2);
+
+
+    if (p > 0.1) {
+      scrollHint.classList.add('hidden');
+      slideDots.classList.add('visible');
+    } else {
+      scrollHint.classList.remove('hidden');
+      slideDots.classList.remove('visible');
+    }
+  }
+
+  applyProgress(0);
+
+  function onWheel(e) {
+    if (expanded && e.deltaY < 0 && window.scrollY <= 5) {
+      expanded = false;
+      document.body.style.overflow = '';
+      hero.style.position = 'relative';
+      progress = 0.98;
+      applyProgress(progress);
+      e.preventDefault();
+      return;
+    }
+    if (!expanded) {
+      e.preventDefault();
+      const delta = e.deltaY * 0.0012;
+      progress = Math.min(Math.max(progress + delta, 0), 1);
+      applyProgress(progress);
+
+      if (progress >= 1 && !expanded) {
+        expanded = true;
+        hero.style.position = 'relative';
+        document.body.style.overflow = '';
+      }
+    }
+  }
+
+  function onTouchStart(e) {
+    touchStartY = e.touches[0].clientY;
+  }
+
+  function onTouchMove(e) {
+    if (!touchStartY) return;
+    const dy = touchStartY - e.touches[0].clientY;
+
+    if (expanded && dy < -30 && window.scrollY <= 5) {
+      expanded = false;
+      progress = 0.98;
+      applyProgress(progress);
+      e.preventDefault();
+      touchStartY = e.touches[0].clientY;
+      return;
+    }
+    if (!expanded) {
+      e.preventDefault();
+      const factor = dy < 0 ? 0.008 : 0.005;
+      progress = Math.min(Math.max(progress + dy * factor, 0), 1);
+      applyProgress(progress);
+
+      if (progress >= 1) {
+        expanded = true;
+      }
+      touchStartY = e.touches[0].clientY;
+    }
+  }
+
+  function onTouchEnd() { touchStartY = 0; }
+
+  function onScroll() {
+    if (!expanded) {
+      window.scrollTo(0, 0);
+    }
+  }
+
+  window.addEventListener('wheel', onWheel, { passive: false });
+  window.addEventListener('touchstart', onTouchStart, { passive: false });
+  window.addEventListener('touchmove', onTouchMove, { passive: false });
+  window.addEventListener('touchend', onTouchEnd);
+  window.addEventListener('scroll', onScroll);
+
+  // === NAV ===
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('solid', window.scrollY > 80);
+  });
+
+  // === REVEAL ON SCROLL ===
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+})();
+</script>
+
+</body>
+</html>
