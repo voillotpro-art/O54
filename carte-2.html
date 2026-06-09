@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Carte — O'54 Restaurant Brasserie</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Josefin+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C4A265;--gold-light:#D4B87A;--gold-dark:#A88B4A;
+  --cream:#F5F0E8;--dark:#1A1714;--dark-surface:#22201C;--dark-card:#2A2824;
+  --text-light:#C8C0B4;--text-muted:#8A8278;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Josefin Sans','Helvetica Neue',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--cream);font-family:var(--sans);font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 3rem;display:flex;align-items:center;justify-content:space-between;background:rgba(26,23,20,0.97);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(196,162,101,0.15)}
+.nav-logo{display:flex;align-items:center;gap:.8rem;text-decoration:none}
+.nav-logo img{height:52px;width:52px;border-radius:50%;object-fit:cover;display:block}
+.nav-logo span{font-family:var(--serif);font-size:1.5rem;font-weight:500;color:var(--gold);letter-spacing:.04em}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{color:var(--cream);text-decoration:none;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;font-weight:400;transition:color .3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a.active{color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:4px}
+.nav-cta{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:.55rem 1.5rem;font-family:var(--sans);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none}
+.nav-cta:hover{background:var(--gold);color:var(--dark)}
+
+/* HERO MENU */
+.menu-hero{height:50vh;min-height:400px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:6rem 2rem 2rem;position:relative;overflow:hidden}
+.menu-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(196,162,101,0.06) 0%,transparent 70%)}
+.menu-hero h1{font-family:var(--serif);font-size:clamp(3rem,7vw,5rem);font-weight:300;font-style:italic;color:var(--gold);margin-bottom:1rem}
+.menu-hero p{color:var(--text-muted);font-size:1rem;letter-spacing:.1em}
+.menu-hero .formules-row{display:flex;gap:1.5rem;margin-top:2.5rem;flex-wrap:wrap;justify-content:center}
+.formule-pill{background:var(--dark-surface);border:1px solid rgba(196,162,101,0.15);padding:.8rem 1.5rem;text-align:center;min-width:140px;transition:border-color .3s}
+.formule-pill:hover{border-color:var(--gold)}
+.formule-pill .fname{font-family:var(--serif);font-size:1rem;font-style:italic;color:var(--cream);margin-bottom:.3rem}
+.formule-pill .fprice{color:var(--gold);font-size:1.1rem;font-weight:500}
+.formule-pill .fdesc{color:var(--text-muted);font-size:.65rem;letter-spacing:.08em;margin-top:.2rem}
+
+/* 3D CARD CONTAINER */
+.card-container{min-height:60rem;display:flex;align-items:center;justify-content:center;position:relative;padding:2rem 1.5rem}
+.card-inner{width:100%;max-width:1000px;position:relative;perspective:1000px}
+.card-3d{background:var(--dark-card);border:2px solid rgba(108,108,108,0.3);border-radius:24px;padding:2rem 3rem 3rem;box-shadow:0 0 #0000004d,0 9px 20px #0000004a,0 37px 37px #00000042;transform-origin:center top;will-change:transform}
+
+/* MENU SECTIONS */
+.menu-section{padding:3rem 0;border-bottom:1px solid rgba(196,162,101,0.08)}
+.menu-section:last-child{border-bottom:none}
+.menu-section-title{font-family:var(--serif);font-size:2rem;font-weight:400;font-style:italic;color:var(--gold);text-align:center;margin-bottom:.5rem}
+.menu-section-sub{text-align:center;color:var(--text-muted);font-size:.78rem;font-style:italic;margin-bottom:2rem;letter-spacing:.05em}
+.menu-category{margin-bottom:2rem}
+.menu-category-name{font-family:var(--serif);font-size:1.2rem;font-weight:500;color:var(--cream);margin-bottom:1rem;padding-bottom:.4rem;border-bottom:1px solid rgba(196,162,101,0.12)}
+
+.menu-item{display:flex;justify-content:space-between;align-items:baseline;padding:.5rem 0;gap:1rem}
+.menu-item-name{font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--cream);font-style:italic}
+.menu-item-desc{color:var(--text-muted);font-size:.8rem;margin-top:.15rem;font-style:normal;font-family:var(--sans)}
+.menu-item-price{color:var(--gold);font-size:1rem;font-weight:500;white-space:nowrap;font-family:var(--sans)}
+.menu-item-left{flex:1;min-width:0}
+.menu-item-dots{flex:1;border-bottom:1px dotted rgba(196,162,101,0.15);margin:0 .5rem;min-width:20px;align-self:end;margin-bottom:6px}
+.supplement{padding-left:1.5rem;font-size:.85rem}
+.supplement .menu-item-name{font-size:.9rem;color:var(--text-light)}
+
+/* WINES GRID */
+.wines-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+.wine-region{margin-bottom:1.5rem}
+.wine-region-name{font-weight:600;color:var(--cream);font-size:.9rem;margin-bottom:.8rem;letter-spacing:.05em}
+.wine-item{display:flex;justify-content:space-between;align-items:baseline;padding:.35rem 0}
+.wine-item-name{color:var(--text-light);font-size:.88rem;flex:1}
+.wine-item-domain{color:var(--text-muted);font-size:.72rem;font-style:italic}
+.wine-item-price{color:var(--gold);font-size:.88rem;white-space:nowrap;margin-left:.5rem}
+.bio-tag{color:#8B6D3F;font-size:.7rem;font-weight:500;letter-spacing:.08em}
+
+/* TABS */
+.menu-tabs{display:flex;justify-content:center;gap:.5rem;padding:1.5rem 0 0;flex-wrap:wrap;position:sticky;top:70px;z-index:50;background:var(--dark);padding-bottom:1rem}
+.menu-tab{background:transparent;border:1px solid rgba(196,162,101,0.2);color:var(--text-muted);padding:.5rem 1.2rem;font-family:var(--sans);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none}
+.menu-tab:hover,.menu-tab.active{background:var(--gold);color:var(--dark);border-color:var(--gold)}
+
+/* FOOTER */
+footer{padding:3rem;text-align:center;border-top:1px solid rgba(196,162,101,0.1)}
+footer p{color:var(--text-muted);font-size:.78rem;letter-spacing:.08em}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:.8rem 1.2rem}
+  .nav-links{display:none}
+  .menu-hero{padding:5rem 1rem 1rem;height:auto;min-height:auto}
+  .card-3d{padding:1.5rem 1.2rem 2rem;border-radius:16px}
+  .wines-grid{grid-template-columns:1fr}
+  .menu-tabs{top:60px}
+  .formules-row{gap:.8rem}
+  .formule-pill{min-width:120px;padding:.6rem 1rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="data:image/png;base64,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" alt="O'54">
+    <span>O'54</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="#" class="active">La carte</a></li>
+    <li><a href="index.html#avis">Avis</a></li>
+    <li><a href="index.html#infos">Infos</a></li>
+  </ul>
+  <a href="tel:0476085698" class="nav-cta">Réserver</a>
+</nav>
+
+<!-- HERO -->
+<section class="menu-hero">
+  <h1>La Carte</h1>
+  <p>Cuisine traditionnelle et inventive</p>
+  <div class="formules-row">
+    <div class="formule-pill">
+      <div class="fname">O'Maximum</div>
+      <div class="fprice">20,00€</div>
+      <div class="fdesc">Entrée + Plat + Fromage + Dessert + Café</div>
+    </div>
+    <div class="formule-pill">
+      <div class="fname">O'riginale</div>
+      <div class="fprice">17,00€</div>
+      <div class="fdesc">Entrée + Plat + Fromage ou Dessert + Café</div>
+    </div>
+    <div class="formule-pill">
+      <div class="fname">Rapid'O'</div>
+      <div class="fprice">15,00€</div>
+      <div class="fdesc">Entrée + Plat ou Plat + Dessert + Café</div>
+    </div>
+    <div class="formule-pill">
+      <div class="fname">O'minimum</div>
+      <div class="fprice">14,00€</div>
+      <div class="fdesc">Entrée + Fromage ou Dessert</div>
+    </div>
+    <div class="formule-pill">
+      <div class="fname">O' moins de 12 ans</div>
+      <div class="fprice">10,00€</div>
+      <div class="fdesc">Kid Burger / Nuggets / Ravioles + Sirop + Glace</div>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div class="menu-tabs">
+  <a href="#salades" class="menu-tab active">Salades</a>
+  <a href="#ravioles" class="menu-tab">Ravioles</a>
+  <a href="#burgers" class="menu-tab">Burgers</a>
+  <a href="#plats" class="menu-tab">Plats</a>
+  <a href="#tartares" class="menu-tab">Tartares</a>
+  <a href="#fromages" class="menu-tab">Fromages</a>
+  <a href="#desserts" class="menu-tab">Desserts</a>
+  <a href="#glaces" class="menu-tab">Glaces</a>
+  <a href="#boissons" class="menu-tab">Boissons</a>
+  <a href="#vins" class="menu-tab">Vins</a>
+</div>
+
+<!-- MENU CONTENT -->
+<div style="max-width:900px;margin:0 auto;padding:0 2rem 4rem;">
+
+<!-- SALADES -->
+<div class="menu-section" id="salades">
+  <div class="menu-section-title">Les Salades</div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Bo-Bun, Un bol Magique</div><div class="menu-item-desc">Vermicelles de riz, Bœuf mariné, Crudités, Nems et Cacahuètes</div></div><div class="menu-item-dots"></div><div class="menu-item-price">15,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Gourmande</div><div class="menu-item-desc">Foie Gras maison, Magrets Fumés, Haricots verts, Toasts et Pignons</div></div><div class="menu-item-dots"></div><div class="menu-item-price">17,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Champsaur</div><div class="menu-item-desc">Tourtons et Quenelles du Champsaur, Jambon cru et Reblochon fondu</div></div><div class="menu-item-dots"></div><div class="menu-item-price">15,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Chèvre chaud</div><div class="menu-item-desc">Fromage de Chèvre sur Pain grillé, Noix et Miel</div></div><div class="menu-item-dots"></div><div class="menu-item-price">12,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Fégatino</div><div class="menu-item-desc">Foies de Volailles confits, Croûtons, Oignons, Œuf poché et Vinaigre framboise</div></div><div class="menu-item-dots"></div><div class="menu-item-price">12,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Caesar</div><div class="menu-item-desc">Filet de Poulet, Croûtons, Parmesan et Sauce Caesar aux anchois</div></div><div class="menu-item-dots"></div><div class="menu-item-price">12,00€</div></div>
+</div>
+
+<!-- RAVIOLES -->
+<div class="menu-section" id="ravioles">
+  <div class="menu-section-title">Les Ravioles de Saint Jean</div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Les Ravioles à la Crème</div><div class="menu-item-desc">Pochées et nappées d'une Sauce Crème</div></div><div class="menu-item-dots"></div><div class="menu-item-price">15,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Les Ravioles aux Morilles</div><div class="menu-item-desc">Pochées et nappées d'une Sauce Morilles</div></div><div class="menu-item-dots"></div><div class="menu-item-price">21,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Les Ravioles à ma Façon</div><div class="menu-item-desc">2 œufs pochés et une Crème de fromage de Chèvre</div></div><div class="menu-item-dots"></div><div class="menu-item-price">17,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Les Ravioles au Foie Gras maison</div><div class="menu-item-desc">2 tranches de Foie Gras sur des Ravioles à la Crème</div></div><div class="menu-item-dots"></div><div class="menu-item-price">21,50€</div></div>
+</div>
+
+<!-- BURGERS -->
+<div class="menu-section" id="burgers">
+  <div class="menu-section-title">Les Burgers</div>
+  <div class="menu-section-sub">Accompagnés de Frites, Mayo, Ketchup, Moutarde</div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le O'54</div><div class="menu-item-desc">150g de bœuf, Champignons, Oignons, Cheddar, Tomates, Cornichons et Salade</div></div><div class="menu-item-dots"></div><div class="menu-item-price">15,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Raclette</div><div class="menu-item-desc">On ajoute du bacon et du fromage à raclette bien fondant</div></div><div class="menu-item-dots"></div><div class="menu-item-price">17,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Végétarien</div><div class="menu-item-desc">100g de Steak Végétal, Salade, Coleslaw, Oignons Rouges, Tomate, Cornichons et Guacamole</div></div><div class="menu-item-dots"></div><div class="menu-item-price">16,50€</div></div>
+</div>
+
+<!-- PLATS -->
+<div class="menu-section" id="plats">
+  <div class="menu-section-title">Les Plats</div>
+  <div class="menu-section-sub">Accompagnés d'un éventail de Légumes de saison</div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Suprême de Poulet</div><div class="menu-item-desc">À la Crème de Cèpes</div></div><div class="menu-item-dots"></div><div class="menu-item-price">18,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Ris de Veau</div><div class="menu-item-desc">Aux Morilles</div></div><div class="menu-item-dots"></div><div class="menu-item-price">28,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Magret de Canard</div><div class="menu-item-desc">Entier et grillé, Sauce Morilles</div></div><div class="menu-item-dots"></div><div class="menu-item-price">26,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">L'Andouillette 5A</div><div class="menu-item-desc">Et sa Crème Moutardée</div></div><div class="menu-item-dots"></div><div class="menu-item-price">18,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">L'Escalope de Veau</div><div class="menu-item-desc">À la Parmesane avec ses Linguines</div></div><div class="menu-item-dots"></div><div class="menu-item-price">19,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Pièce de Bœuf</div><div class="menu-item-desc">250g env.</div></div><div class="menu-item-dots"></div><div class="menu-item-price">17,90€</div></div>
+  <div class="menu-item supplement"><div class="menu-item-left"><div class="menu-item-name">+ Sauce Poivre ou Roquefort</div></div><div class="menu-item-dots"></div><div class="menu-item-price">4,50€</div></div>
+  <div class="menu-item supplement"><div class="menu-item-left"><div class="menu-item-name">+ Sauce Morilles</div></div><div class="menu-item-dots"></div><div class="menu-item-price">7,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Pavé de Saumon frais</div><div class="menu-item-desc">À la Crème Ciboulette Citronnée</div></div><div class="menu-item-dots"></div><div class="menu-item-price">19,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Tentacule de Poulpe</div><div class="menu-item-desc">À la Crème de Poivron et Chorizo</div></div><div class="menu-item-dots"></div><div class="menu-item-price">16,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Steak de Thon</div><div class="menu-item-desc">Sauce vierge, avec Écrasé de Pommes de Terre</div></div><div class="menu-item-dots"></div><div class="menu-item-price">21,50€</div></div>
+</div>
+
+<!-- TARTARES -->
+<div class="menu-section" id="tartares">
+  <div class="menu-section-title">Les Tartares au Couteau</div>
+  <div class="menu-section-sub">Servis avec un bol de Frites</div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Tartare de Bœuf</div><div class="menu-item-desc">Taillé au couteau dans le rond de Paris, assaisonné par nos soins</div></div><div class="menu-item-dots"></div><div class="menu-item-price">19,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Tartare de Thon à l'avocat</div><div class="menu-item-desc">Thon frais, Guacamole, assaisonné par nos soins, saveur thaï</div></div><div class="menu-item-dots"></div><div class="menu-item-price">18,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Tartare de Saumon</div><div class="menu-item-desc">Filet de saumon frais, poivrons, aneth, assaisonné par nos soins</div></div><div class="menu-item-dots"></div><div class="menu-item-price">17,90€</div></div>
+</div>
+
+<!-- FROMAGES -->
+<div class="menu-section" id="fromages">
+  <div class="menu-section-title">Les Fromages</div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Fromage Blanc à la crème</div></div><div class="menu-item-dots"></div><div class="menu-item-price">4,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Le Fromage Blanc au coulis</div></div><div class="menu-item-dots"></div><div class="menu-item-price">4,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">L'Assiette du Berger</div></div><div class="menu-item-dots"></div><div class="menu-item-price">5,00€</div></div>
+</div>
+
+<!-- DESSERTS -->
+<div class="menu-section" id="desserts">
+  <div class="menu-section-title">Les Desserts Faits Maison</div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Fondant au Chocolat</div></div><div class="menu-item-dots"></div><div class="menu-item-price">7,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Brick au Toblerone</div><div class="menu-item-desc">Avec sa glace Carte d'Or</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Tiramisù</div></div><div class="menu-item-dots"></div><div class="menu-item-price">6,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Pavlova aux Fruits Rouges</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Mousse au Chocolat</div></div><div class="menu-item-dots"></div><div class="menu-item-price">6,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Tarte Tatin</div><div class="menu-item-desc">Et sa cuillerée de Crème Fraîche</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Île Flottante</div><div class="menu-item-desc">Caramel au Beurre salé</div></div><div class="menu-item-dots"></div><div class="menu-item-price">7,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Crème brûlée</div></div><div class="menu-item-dots"></div><div class="menu-item-price">6,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Profiteroles</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Café gourmand</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Thé gourmand</div></div><div class="menu-item-dots"></div><div class="menu-item-price">9,00€</div></div>
+</div>
+
+<!-- GLACES -->
+<div class="menu-section" id="glaces">
+  <div class="menu-section-title">Les Coupes Glacées</div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">L'Ardéchoise</div><div class="menu-item-desc">1 boule Marron, 2 boules Vanille, Crème de marrons, Meringue, Crème fouettée</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Dame Blanche</div><div class="menu-item-desc">3 boules Vanille, Nappage Chocolat chaud, Crème fouettée</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Chocolat ou Café Liégeois</div><div class="menu-item-desc">2 boules, Chocolat fondu ou Café chaud, Crème fouettée</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Fruit Rouge</div><div class="menu-item-desc">Cerise, Framboise, Fraise, Cocktail de Fruits Rouges, Crème fouettée</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,90€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Pouss Gnac-Gnac</div><div class="menu-item-desc">1 boule Poire arrosée d'alcool de poire</div></div><div class="menu-item-dots"></div><div class="menu-item-price">7,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Typique</div><div class="menu-item-desc">1 boule Chartreuse arrosée d'alcool de Chartreuse</div></div><div class="menu-item-dots"></div><div class="menu-item-price">7,00€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Iceberg</div><div class="menu-item-desc">1 boule Chocolat, 1 boule Menthe chocolat, Peppermint</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,50€</div></div>
+  <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Colonel</div><div class="menu-item-desc">2 boules Citron Vert ou Jaune, Vodka</div></div><div class="menu-item-dots"></div><div class="menu-item-price">7,50€</div></div>
+  <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(196,162,101,0.08)">
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Coupe 1 boule</div></div><div class="menu-item-dots"></div><div class="menu-item-price">2,50€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Coupe 2 boules</div></div><div class="menu-item-dots"></div><div class="menu-item-price">5,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Coupe 3 boules</div></div><div class="menu-item-dots"></div><div class="menu-item-price">7,50€</div></div>
+  </div>
+</div>
+
+<!-- BOISSONS -->
+<div class="menu-section" id="boissons">
+  <div class="menu-section-title">Les Boissons</div>
+  <div class="menu-category"><div class="menu-category-name">Sans Alcool</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">San Pellegrino</div><div class="menu-item-desc">50cl 3,50€ · 100cl 5,00€</div></div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Jus de fruits</div><div class="menu-item-desc">Orange, Abricot, Ananas, Pomme, Tomate</div></div><div class="menu-item-dots"></div><div class="menu-item-price">3,50€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Coca-cola, Fuze Tea, Ice Tea, Orangina, Schweppes, Perrier</div><div class="menu-item-desc">33cl</div></div><div class="menu-item-dots"></div><div class="menu-item-price">3,50€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Diabolo</div><div class="menu-item-desc">Limonade et sirop</div></div><div class="menu-item-dots"></div><div class="menu-item-price">3,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Limonade (verre)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">2,70€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Sirop à l'eau (verre)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">2,50€</div></div>
+  </div>
+  <div class="menu-category"><div class="menu-category-name">Apéritifs</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Kir, Ricard, Pastis (2cl)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">3,50€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Martini, Porto, Suze, Muscat (4cl)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">4,50€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Spritz</div></div><div class="menu-item-dots"></div><div class="menu-item-price">6,50€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Coupette de Champagne Cordon rouge, Mumm</div></div><div class="menu-item-dots"></div><div class="menu-item-price">10,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Gin, Whisky, Vodka (4cl)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">6,00€</div></div>
+  </div>
+  <div class="menu-category"><div class="menu-category-name">Bières</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Warsteiner pression</div><div class="menu-item-desc">Demi 25cl 3,50€ · Sérieux 50cl 7,00€</div></div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Pater Linus pression</div><div class="menu-item-desc">Demi 25cl 4,20€ · Sérieux 50cl 8,40€</div></div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Mont Blanc (33cl)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">5,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Desperado (33cl)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">5,50€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Heineken (25cl)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">3,00€</div></div>
+  </div>
+  <div class="menu-category"><div class="menu-category-name">Digestifs</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Chartreuse, Poire, Cognac, Armagnac, Calvados (4cl)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">6,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Rhum Diplomático, Chivas, Jack Daniels (4cl)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">7,50€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">La Chartreuse VEP (4cl)</div></div><div class="menu-item-dots"></div><div class="menu-item-price">15,00€</div></div>
+  </div>
+  <div class="menu-category"><div class="menu-category-name">Boissons chaudes</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Café expresso</div></div><div class="menu-item-dots"></div><div class="menu-item-price">1,60€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Thé, Tisane, Café double</div></div><div class="menu-item-dots"></div><div class="menu-item-price">2,50€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Cappuccino, Chocolat Chaud</div></div><div class="menu-item-dots"></div><div class="menu-item-price">3,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Irish Coffee</div><div class="menu-item-desc">Café et whisky</div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,50€</div></div>
+  </div>
+</div>
+
+<!-- VINS -->
+<div class="menu-section" id="vins">
+  <div class="menu-section-title">La Carte des Vins</div>
+
+  <div class="menu-category"><div class="menu-category-name">Vins au Verre · 15cl</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Blanc — Bourgogne, Viré Clissé</div><div class="menu-item-desc">Domaine Les Gandines · <span class="bio-tag">Bio</span></div></div><div class="menu-item-dots"></div><div class="menu-item-price">8,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Blanc — Sud-Ouest, Premières Grives</div><div class="menu-item-desc">Château Tariquet</div></div><div class="menu-item-dots"></div><div class="menu-item-price">5,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Rosé — Côte de Provence, Opale</div><div class="menu-item-desc">Les Vignerons du Roy René</div></div><div class="menu-item-dots"></div><div class="menu-item-price">6,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Rouge — Côtes du Rhône, Saint Esprit</div><div class="menu-item-desc">Domaine Delas</div></div><div class="menu-item-dots"></div><div class="menu-item-price">4,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Rouge — Loire, Saint Nicolas de Bourgueil</div><div class="menu-item-desc">Domaine de la Cottelleraie · <span class="bio-tag">Bio</span></div></div><div class="menu-item-dots"></div><div class="menu-item-price">7,00€</div></div>
+  </div>
+
+  <div class="menu-category"><div class="menu-category-name">Vins Blancs · 75cl</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Bourgogne, Viré Clissé</div><div class="menu-item-desc">Domaine Gandines · <span class="bio-tag">Bio</span></div></div><div class="menu-item-dots"></div><div class="menu-item-price">40,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Crozes Hermitage — Cuvée L</div><div class="menu-item-desc">Domaine Laurent Combier · <span class="bio-tag">Bio</span></div></div><div class="menu-item-dots"></div><div class="menu-item-price">40,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Viognier AOP</div><div class="menu-item-desc">Domaine de Montine</div></div><div class="menu-item-dots"></div><div class="menu-item-price">37,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Isère, IGP du Grésivaudan — Chardonnay</div><div class="menu-item-desc">Domaine Finot Frères</div></div><div class="menu-item-dots"></div><div class="menu-item-price">38,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Sancerre</div><div class="menu-item-desc">Domaine Delaporte</div></div><div class="menu-item-dots"></div><div class="menu-item-price">46,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Muscadet sur Lie — La Divatte</div><div class="menu-item-desc">Les Vignerons de la Noelle</div></div><div class="menu-item-dots"></div><div class="menu-item-price">17,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Sud-Ouest, Premières Grives</div><div class="menu-item-desc">Château Tariquet</div></div><div class="menu-item-dots"></div><div class="menu-item-price">28,70€</div></div>
+  </div>
+
+  <div class="menu-category"><div class="menu-category-name">Vins Rosés · 75cl</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Côte de Provence, Le fruité</div><div class="menu-item-desc">Domaine Rousset · <span class="bio-tag">Bio</span></div></div><div class="menu-item-dots"></div><div class="menu-item-price">18,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Côte de Provence, Opale</div><div class="menu-item-desc">Les Vignerons du Roy René</div></div><div class="menu-item-dots"></div><div class="menu-item-price">28,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Note Bleue</div><div class="menu-item-desc">Les Maîtres Vignerons de Saint Tropez</div></div><div class="menu-item-dots"></div><div class="menu-item-price">24,00€</div></div>
+  </div>
+
+  <div class="menu-category"><div class="menu-category-name">Champagne & Bulles · 75cl</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Tradition Charpentier, Brut</div></div><div class="menu-item-dots"></div><div class="menu-item-price">55,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Deutz, Brut Rosé</div></div><div class="menu-item-dots"></div><div class="menu-item-price">125,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Ruinart, Brut</div></div><div class="menu-item-dots"></div><div class="menu-item-price">112,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Ruinart, Blanc de blanc</div></div><div class="menu-item-dots"></div><div class="menu-item-price">186,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Vouvray de Chanceny, Brut</div></div><div class="menu-item-dots"></div><div class="menu-item-price">28,00€</div></div>
+  </div>
+
+  <div class="menu-category"><div class="menu-category-name">Vins Rouges · Côtes du Rhône</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Saint Esprit</div><div class="menu-item-desc">Domaine Delas</div></div><div class="menu-item-dots"></div><div class="menu-item-price">19,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Parallèle 45</div><div class="menu-item-desc">Paul Jaboulet Aîné · <span class="bio-tag">Bio</span></div></div><div class="menu-item-dots"></div><div class="menu-item-price">28,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Crozes Hermitage — Les Launes</div><div class="menu-item-desc">Domaine Delas</div></div><div class="menu-item-dots"></div><div class="menu-item-price">36,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Saint Joseph — Les Challeys</div><div class="menu-item-desc">Domaine Delas</div></div><div class="menu-item-dots"></div><div class="menu-item-price">43,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Cornas — Les Grandes Terrasses</div><div class="menu-item-desc">Paul Jaboulet Aîné</div></div><div class="menu-item-dots"></div><div class="menu-item-price">76,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Côte-Rôtie — AOP</div><div class="menu-item-desc">François & Fils</div></div><div class="menu-item-dots"></div><div class="menu-item-price">97,00€</div></div>
+  </div>
+
+  <div class="menu-category"><div class="menu-category-name">Vins Rouges · Beaujolais & Bordeaux & Bourgogne</div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Morgon</div><div class="menu-item-desc">Domaine Ruet</div></div><div class="menu-item-dots"></div><div class="menu-item-price">29,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Brouilly</div><div class="menu-item-desc">Domaine Ruet</div></div><div class="menu-item-dots"></div><div class="menu-item-price">28,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Bordeaux AOC</div><div class="menu-item-desc">Château Baratet · <span class="bio-tag">Bio</span></div></div><div class="menu-item-dots"></div><div class="menu-item-price">19,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Saint Émilion — Le Jardin</div><div class="menu-item-desc">Château Queyron-PindeFleurs</div></div><div class="menu-item-dots"></div><div class="menu-item-price">38,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Saint Émilion — Grand Cru</div><div class="menu-item-desc">Château Queyron-PindeFleurs</div></div><div class="menu-item-dots"></div><div class="menu-item-price">51,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Margaux — Aurore</div><div class="menu-item-desc">Château Dauzac</div></div><div class="menu-item-dots"></div><div class="menu-item-price">75,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Pomerol</div><div class="menu-item-desc">Château Taillefer</div></div><div class="menu-item-dots"></div><div class="menu-item-price">127,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Saint Julien</div><div class="menu-item-desc">Château Talbot</div></div><div class="menu-item-dots"></div><div class="menu-item-price">273,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Givry 1er cru — Clos de la Baraude</div><div class="menu-item-desc">Domaine Teinmaier</div></div><div class="menu-item-dots"></div><div class="menu-item-price">43,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Savigny Les Beaunes — Les Vieilles Vignes</div><div class="menu-item-desc">Vincent Girardin</div></div><div class="menu-item-dots"></div><div class="menu-item-price">66,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Pommard — Vieilles Vignes</div><div class="menu-item-desc">Vincent Girardin</div></div><div class="menu-item-dots"></div><div class="menu-item-price">122,00€</div></div>
+    <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Gevrey Chambertin « Aux Corvées »</div><div class="menu-item-desc">Domaine Henry Richard</div></div><div class="menu-item-dots"></div><div class="menu-item-price">127,00€</div></div>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  <p style="color:var(--text-muted);font-size:.72rem;font-style:italic;margin-bottom:.5rem">L'abus d'alcool est dangereux pour la santé. La délivrance de boissons alcoolisées à des personnes mineures est interdite.</p>
+  <p>Formules servies uniquement le midi (sauf formule enfant) — Prix nets — Service compris</p>
+  <p style="margin-top:.5rem">O'54 — 29 Chemin de la Grande Terre, 38660 Le Touvet — <a href="tel:0476085698" style="color:var(--gold);text-decoration:none">04 76 08 56 98</a></p>
+</footer>
+
+<script>
+// Tab active on scroll
+const tabs = document.querySelectorAll('.menu-tab');
+const sections = [];
+tabs.forEach(t => {
+  const id = t.getAttribute('href').replace('#','');
+  const el = document.getElementById(id);
+  if(el) sections.push({el, tab: t});
+});
+
+window.addEventListener('scroll', () => {
+  let current = sections[0];
+  sections.forEach(s => {
+    if(s.el.getBoundingClientRect().top < 150) current = s;
+  });
+  tabs.forEach(t => t.classList.remove('active'));
+  if(current) current.tab.classList.add('active');
+});
+
+// Smooth scroll for tabs
+tabs.forEach(t => {
+  t.addEventListener('click', e => {
+    e.preventDefault();
+    const id = t.getAttribute('href').replace('#','');
+    const el = document.getElementById(id);
+    if(el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({top: y, behavior: 'smooth'});
+    }
+  });
+});
+</script>
+</body>
+</html>
